@@ -1,0 +1,88 @@
+[
+    {
+        "label": "tkinter",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "tkinter",
+        "description": "tkinter",
+        "detail": "tkinter",
+        "documentation": {}
+    },
+    {
+        "label": "ttk",
+        "importPath": "tkinter",
+        "description": "tkinter",
+        "isExtraImport": true,
+        "detail": "tkinter",
+        "documentation": {}
+    },
+    {
+        "label": "PacketCapture",
+        "importPath": "packet_capture",
+        "description": "packet_capture",
+        "isExtraImport": true,
+        "detail": "packet_capture",
+        "documentation": {}
+    },
+    {
+        "label": "PacketMonitorApp",
+        "importPath": "gui",
+        "description": "gui",
+        "isExtraImport": true,
+        "detail": "gui",
+        "documentation": {}
+    },
+    {
+        "label": "sniff",
+        "importPath": "scapy.all",
+        "description": "scapy.all",
+        "isExtraImport": true,
+        "detail": "scapy.all",
+        "documentation": {}
+    },
+    {
+        "label": "threading",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "threading",
+        "description": "threading",
+        "detail": "threading",
+        "documentation": {}
+    },
+    {
+        "label": "Filters",
+        "kind": 6,
+        "importPath": "Tools.Traffic_Monitoring.src.filters",
+        "description": "Tools.Traffic_Monitoring.src.filters",
+        "peekOfCode": "class Filters:\n    @staticmethod\n    def apply_filters(packets, src_ip=None, dst_ip=None, protocol=None):\n        # Implement filtering logic based on parameters\n        filtered_packets = packets\n        return filtered_packets",
+        "detail": "Tools.Traffic_Monitoring.src.filters",
+        "documentation": {}
+    },
+    {
+        "label": "PacketMonitorApp",
+        "kind": 6,
+        "importPath": "Tools.Traffic_Monitoring.src.gui",
+        "description": "Tools.Traffic_Monitoring.src.gui",
+        "peekOfCode": "class PacketMonitorApp:\n    def __init__(self, root):\n        self.root = root\n        self.root.title(\"Real-Time Traffic Monitoring\")\n        # Create a Treeview for displaying packets\n        self.tree = ttk.Treeview(root, columns=('Source IP', 'Destination IP', 'Protocol', 'Length'), show='headings')\n        self.tree.heading('Source IP', text='Source IP')\n        self.tree.heading('Destination IP', text='Destination IP')\n        self.tree.heading('Protocol', text='Protocol')\n        self.tree.heading('Length', text='Packet Length')",
+        "detail": "Tools.Traffic_Monitoring.src.gui",
+        "documentation": {}
+    },
+    {
+        "label": "main",
+        "kind": 2,
+        "importPath": "Tools.Traffic_Monitoring.src.main",
+        "description": "Tools.Traffic_Monitoring.src.main",
+        "peekOfCode": "def main():\n    root = tk.Tk()\n    app = PacketMonitorApp(root)\n    root.mainloop()\nif __name__ == \"__main__\":\n    main()",
+        "detail": "Tools.Traffic_Monitoring.src.main",
+        "documentation": {}
+    },
+    {
+        "label": "PacketCapture",
+        "kind": 6,
+        "importPath": "Tools.Traffic_Monitoring.src.packet_capture",
+        "description": "Tools.Traffic_Monitoring.src.packet_capture",
+        "peekOfCode": "class PacketCapture:\n    def __init__(self, tree):\n        self.tree = tree\n        self.is_monitoring = False\n        self.sniff_thread = None\n    def packet_callback(self, packet):\n        if self.is_monitoring:\n            # Extract packet details\n            src_ip = packet[1].src if hasattr(packet, 'src') else 'N/A'\n            dst_ip = packet[1].dst if hasattr(packet, 'dst') else 'N/A'",
+        "detail": "Tools.Traffic_Monitoring.src.packet_capture",
+        "documentation": {}
+    }
+]
