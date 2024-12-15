@@ -1,0 +1,117 @@
+
+#-------------
+# LOCAL RULES
+#-------------
+alert icmp any any -> any any (msg:"Testing ICMP alert"; sid:1000001;)
+alert udp any any -> any any (msg:"Testing UDP alert"; sid:1000002;)
+alert tcp any any -> any any (msg:"Testing TCP alert"; sid:1000003;)
+
+# --------------------------------------------------
+# LOCAL RULES
+# --------------------------------------------------
+
+# --------------------------------
+# 1. Reconnaissance and Scanning
+# --------------------------------
+
+# TCP SYN Port Scan
+alert tcp any any -> any any (msg:"RECON: TCP SYN Port Scan Detected"; flags:S; detection_filter:track by_src, count 30, seconds 10; classtype:attempted-recon; sid:2000001; rev:1;)
+
+# UDP Scan
+alert udp any any -> any any (msg:"RECON: UDP Scan Detected"; detection_filter:track by_src, count 15, seconds 10; classtype:attempted-recon; sid:2000002; rev:1;)
+
+# ICMP Sweep
+alert icmp any any -> any any (msg:"RECON: ICMP Sweep Detected"; itype:8; detection_filter:track by_src, count 10, seconds 10; classtype:attempted-recon; sid:2000003; rev:1;)
+
+# DNS Zone Transfer
+alert tcp any any -> any 53 (msg:"RECON: DNS Zone Transfer Attempt"; content:"|00 00 FC|"; offset:2; depth:4; classtype:attempted-recon; sid:2000004; rev:1;)
+
+# SSH Brute Force
+alert tcp any any -> any 22 (msg:"RECON: SSH Brute Force Detected"; flow:to_server,established; flags:S; detection_filter:track by_src, count 10, seconds 10; classtype:attempted-user; sid:2000005; rev:1;)
+
+# --------------------------------
+# 2. Exploitation and Intrusions
+# --------------------------------
+
+# EternalBlue SMB Exploit
+alert tcp any any -> any 445 (msg:"EXPLOIT: EternalBlue SMB Exploit Detected"; content:"|FC 48 83 E4|"; depth:4; classtype:attempted-admin; sid:2000010; rev:1;)
+
+# SQL Injection
+alert tcp any any -> any 80 (msg:"EXPLOIT: SQL Injection Attempt"; flow:to_server,established; content:"select"; nocase; content:"from"; nocase; pcre:"/(\%27)|(\')|(\-\-)|(\%23)|(#)/"; classtype:web-application-attack; sid:2000011; rev:1;)
+
+# Shellshock Exploit
+alert tcp any any -> any 80 (msg:"EXPLOIT: Shellshock Bash Exploit Detected"; flow:to_server,established; content:"|28 29 20 7B 20 3A 3B 20 7D 3B|"; http_header; classtype:web-application-attack; sid:2000012; rev:2;)
+
+# RDP Exploit Detection
+alert tcp any any -> any 3389 (msg:"EXPLOIT: Suspicious RDP Activity"; flow:to_server,established; dsize:>1500; classtype:attempted-admin; sid:2000013; rev:1;)
+
+# XSS Attack
+alert tcp any any -> any 80 (msg:"EXPLOIT: Cross-Site Scripting Detected"; flow:to_server,established; content:"<script>"; nocase; classtype:web-application-attack; sid:2000014; rev:1;)
+
+# --------------------------------
+# 3. Malware Activity
+# --------------------------------
+
+# Malicious User-Agent Strings
+alert tcp any any -> any 80 (msg:"MALWARE: Malicious User-Agent Detected"; content:"User-Agent|3A|"; content:"evil-bot"; http_header; classtype:trojan-activity; sid:2000020; rev:1;)
+
+# Suspicious Executable Download
+alert tcp any any -> any any (msg:"MALWARE: Suspicious Executable Download Detected"; flow:to_client,established; content:".exe"; http_uri; nocase; classtype:trojan-activity; sid:2000021; rev:1;)
+
+# Cobalt Strike Beacon Traffic
+alert tcp any any -> any any (msg:"MALWARE: Cobalt Strike Beacon Detected"; content:"|BE EF|"; classtype:trojan-activity; sid:2000022; rev:1;)
+
+# Ransomware File Extensions
+alert tcp any any -> any any (msg:"MALWARE: Suspicious Ransomware Extension"; flow:to_server,established; content:".locked"; nocase; classtype:trojan-activity; sid:2000023; rev:1;)
+
+# --------------------------------
+# 4. Command and Control (C2)
+# --------------------------------
+
+# DNS Tunneling Detection
+alert udp any any -> any 53 (msg:"C2: DNS Tunneling Detected"; content:"malicious-domain.com"; classtype:trojan-activity; sid:2000030; rev:2;)
+
+# Suspicious HTTPS Certificate
+alert tcp any any -> any 443 (msg:"C2: Suspicious SSL Traffic Detected"; content:"malicious-ssl.com"; classtype:trojan-activity; sid:2000031; rev:2;)
+
+# --------------------------------
+# 5. Data Exfiltration
+# --------------------------------
+
+# Large DNS TXT Response
+alert udp any any -> any 53 (msg:"EXFIL: Large DNS TXT Response Detected"; content:"txt"; nocase; dsize:>500; classtype:policy-violation; sid:2000040; rev:3;)
+# FTP Suspicious Upload
+alert tcp any any -> any 21 (msg:"EXFIL: Suspicious File Upload via FTP"; content:"put"; flow:to_server,established; classtype:policy-violation; sid:2000041; rev:2;)
+
+# HTTP Data Leak
+alert tcp any any -> any 80 (msg:"EXFIL: HTTP Data Leak Detected"; flow:to_server,established; content:"password"; http_client_body; classtype:policy-violation; sid:2000042; rev:2;)
+
+# --------------------------------
+# 6. Denial of Service (DoS)
+# --------------------------------
+
+# SYN Flood
+alert tcp any any -> any any (msg:"DOS: SYN Flood Detected"; flags:S; detection_filter:track by_src, count 100, seconds 10; classtype:attempted-dos; sid:2000050; rev:1;)
+
+# ICMP Flood
+alert icmp any any -> any any (msg:"DOS: ICMP Flood Detected"; itype:8; detection_filter:track by_src, count 50, seconds 10; classtype:attempted-dos; sid:2000051; rev:1;)
+
+# --------------------------------
+# 7. Abuse of Services
+# --------------------------------
+
+# SMTP Spam
+alert tcp any any -> any 25 (msg:"ABUSE: SMTP Spam Activity Detected"; flow:to_server,established; content:"Subject: Buy Now"; classtype:misc-activity; sid:2000060; rev:1;)
+
+# NTP Amplification
+alert udp any any -> any 123 (msg:"ABUSE: NTP Amplification Attack Detected"; content:"|17 00 03 2a|"; classtype:attempted-dos; sid:2000061; rev:1;)
+
+# --------------------------------
+# 8. Anomalous Behavior
+# --------------------------------
+
+# Non-Standard Protocols
+alert tcp any any -> any any (msg:"ANOMALY: Suspicious Protocol Detected"; pcre:"/^UNUSUAL_PROTOCOL$/"; classtype:misc-activity; sid:2000070; rev:1;)
+
+# Excessive Data Transfer
+alert tcp any any -> any any (msg:"ANOMALY: Excessive Data Transfer Detected"; flow:to_client,established; dsize:>5000000; classtype:misc-activity; sid:2000071; rev:1;)
